@@ -47,8 +47,10 @@ int main(int argc, char** argv) {
     int i = 0;
     auto t0 = std::chrono::high_resolution_clock::now();
     while(getline(is, line)) {
-        auto output = underscore_text(line, start, end);
-        os.write(output.c_str(), output.size());
+        if (i % 3 != 2) {
+            auto output = underscore_text(line, start, end);
+            os.write(output.c_str(), output.size());
+        }
         i++;
         if (i % 1000 == 0) {
             cout << i << " done" << endl;
