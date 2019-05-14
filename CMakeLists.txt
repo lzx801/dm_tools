@@ -6,4 +6,6 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(src)
 
 add_executable(dm_tools
-        src/phrase_to_underscore.cpp)
+        src/generate_NER_json.cpp
+        src/underscore_text.cpp
+        src/clean_non_ascii.cpp)
