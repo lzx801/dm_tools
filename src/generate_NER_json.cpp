@@ -66,13 +66,39 @@ string phrase_to_underscore_and_ner(string& line, json& phrases, uint64_t& space
     return ss_cleaned.str();
 }
 
+string underscore_text(string& line, const string& start, const string& end) {
+    uint64_t index = 0;
+    ostringstream ss;
+    while (index < line.size()) {
+        uint64_t index1 = line.find(start, index);
+        if (index1 != string::npos) {
+            ss << line.substr(index, index1 - index);
+            index = index1 + start.size();
+            uint64_t index2 = line.find(end, index);
+            auto toReplace = line.substr(index, index2 - index);
+            for (auto& c : toReplace) {
+                if (c == 32) {
+                    ss << "_";
+                } else {
+                    ss << c;
+                }
+            }
+            index = index2 + end.size();
+        } else {
+            break;
+        }
+    }
+    ss << line.substr(index, line.size() - index);
+    return ss.str();
+}
+
 string generate_json(string& title, string& content, string& id, const string& start, const string& end) {
     json j_new = json::object();
     json phrases = json::array();
     uint64_t space = 0;
     auto cleaned_title = phrase_to_underscore_and_ner(title, phrases, space, start, end);
     auto cleaned_content = phrase_to_underscore_and_ner(content, phrases, space, start, end);
-    j_new["id"] = id;
+    j_new["id"] = underscore_text(id, start, end);
     j_new["ner"] = phrases;
     j_new["title"] = cleaned_title;
     j_new["content"] = {cleaned_content};
